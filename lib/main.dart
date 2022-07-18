@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:simple/fixedVideo.dart';
 import 'package:simple/responsive.dart';
-import 'package:http/http.dart';
 import 'package:simple/video.dart';
 
 void main() {
