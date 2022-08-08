@@ -1,8 +1,12 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:simple/fixedVideo.dart';
 import 'package:simple/responsive.dart';
+import 'package:simple/utils.dart';
 import 'package:simple/video.dart';
 
 void main() {
@@ -54,12 +58,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  var clr= 4294951175;
+  var clr = 4294951175;
 
-  void _incrementCounter() {
-  final f=Singleton.instance.dummy="h";
-  print(f);
-   
+  void _incrementCounter() async {
+    thing.box.erase();
+    thing.box.write("john11", "value,fggggggggh");
+    print(thing.box.read("john11"));
+    thing.fetchPath();
   }
 
   @override
@@ -77,10 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
-      ),body: FixedVideo(),
+      ),
+      body: FixedVideo(),
 
-
-      
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
@@ -90,16 +94,51 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+Future<void> getStorage() async {
+  // await DefaultCacheManager().emptyCache();
+  Directory tempDir = await getTemporaryDirectory();
+  String tempPath = tempDir.path;
 
+  print('path---$tempPath');
 
-class Singleton {
-  static final Singleton _singleton =   Singleton._internal();
-  Singleton._internal();
-  static Singleton get instance => _singleton;
-  var somedata="";
-  var dummy;
+  var data = dirStatSync(tempPath);
 
-  
+  print('storage---$data');
 }
 
- 
+// Map<String, int> dirStatSync(String dirPath) {
+double dirStatSync(String dirPath) {
+  int fileNum = 0;
+  double totalSize = 0;
+  var dir = Directory(dirPath);
+  try {
+    if (dir.existsSync()) {
+      dir
+          .listSync(recursive: true, followLinks: false)
+          .forEach((FileSystemEntity entity) {
+        if (entity is File) {
+          fileNum++;
+          totalSize += entity.lengthSync();
+        }
+      });
+    }
+  } catch (e) {
+    print(e.toString());
+  }
+
+  //converting bytes to mb
+  totalSize = totalSize / 1024;
+  totalSize = totalSize / 1024;
+
+  // return {'fileNum': fileNum, 'size': totalSize};
+  return totalSize;
+}
+
+Future<void> _deleteCacheDir() async {
+  print('yes');
+  final cacheDir = await getTemporaryDirectory();
+
+  if (cacheDir.existsSync()) {
+    cacheDir.deleteSync(recursive: true);
+  }
+}

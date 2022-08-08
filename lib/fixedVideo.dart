@@ -20,8 +20,6 @@ class _FixedVideoState extends State<FixedVideo> {
 
     _initializeVideoPlayerFuture = _controller.initialize();
 
-    _controller.play();
-    _controller.setLooping(true);
     super.initState();
   }
 
@@ -30,23 +28,21 @@ class _FixedVideoState extends State<FixedVideo> {
     return FutureBuilder(
       future: _initializeVideoPlayerFuture,
       builder: (context, snapshot) {
- 
         if (snapshot.connectionState == ConnectionState.done) {
-final Size size = _controller.value.size;
-return Container(
-  color: Colors.lightBlue,
-  width: MediaQuery.of(context).size.width,
-  height: MediaQuery.of(context).size.width,
-  child: FittedBox(
-           alignment: Alignment.center,
-       fit: BoxFit.fitWidth,
-       clipBehavior: Clip.hardEdge,
-       child: Container(
-         width: size.width,
-         height: size.height,
-         child: VideoPlayer(_controller))),
-      );
-
+          final Size size = _controller.value.size;
+          return Container(
+            color: Colors.lightBlue,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.width,
+            child: FittedBox(
+                alignment: Alignment.center,
+                fit: BoxFit.fitWidth,
+                clipBehavior: Clip.hardEdge,
+                child: Container(
+                    width: size.width,
+                    height: size.height,
+                    child: VideoPlayer(_controller))),
+          );
         } else {
           // If the VideoPlayerController is still initializing, show a
           // loading spinner.
