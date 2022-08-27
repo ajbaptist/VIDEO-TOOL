@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -11,6 +13,7 @@ class FixedVideo extends StatefulWidget {
 class _FixedVideoState extends State<FixedVideo> {
   late VideoPlayerController _controller;
   late Future<void> _initializeVideoPlayerFuture;
+  bool isFulled = false;
 
   @override
   void initState() {
@@ -19,6 +22,7 @@ class _FixedVideoState extends State<FixedVideo> {
     );
 
     _initializeVideoPlayerFuture = _controller.initialize();
+    _controller.play();
 
     super.initState();
   }
@@ -30,18 +34,33 @@ class _FixedVideoState extends State<FixedVideo> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           final Size size = _controller.value.size;
-          return Container(
-            color: Colors.lightBlue,
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.width,
-            child: FittedBox(
-                alignment: Alignment.center,
-                fit: BoxFit.fitWidth,
-                clipBehavior: Clip.hardEdge,
-                child: Container(
-                    width: size.width,
-                    height: size.height,
-                    child: VideoPlayer(_controller))),
+          log("aspect----->${_controller.value.aspectRatio}");
+          return Column(
+            children: [
+              AspectRatio(
+                aspectRatio: !isFulled ? 1 : _controller.value.aspectRatio,
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.lightBlue,
+                  child: FittedBox(
+                      alignment: Alignment.topCenter,
+                      fit: BoxFit.cover,
+                      clipBehavior: Clip.hardEdge,
+                      child: Container(
+                          width: size.width,
+                          height: size.height,
+                          child: VideoPlayer(_controller))),
+                ),
+              ),
+              IconButton(
+                  onPressed: () {
+                    isFulled = !isFulled;
+                    setState(() {});
+                  },
+                  icon: Icon(Icons.abc_rounded))
+            ],
           );
         } else {
           // If the VideoPlayerController is still initializing, show a

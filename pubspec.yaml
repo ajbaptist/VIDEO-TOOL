@@ -38,7 +38,6 @@ dependencies:
   video_player: ^2.4.5
   visibility_detector: ^0.3.3
   helpers: ^1.1.4
-  better_player: ^0.0.83
   path_provider: ^2.0.11
   hive: ^2.2.3
   get_storage: ^2.0.3
@@ -98,12 +97,5 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 
-flutter_native_splash:
-  color: "#ffffff"
-  image: assets/dart.png
-
-
-  android_12:
-    image: assets/dart.png
-    icon_background_color: "#ffffff"
+ 
 
