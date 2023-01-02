@@ -36,9 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   shimmer: ^2.0.0
   video_player: ^2.4.5
-  visibility_detector: ^0.3.3
   loading_animation_widget: ^1.2.0+3
   http: ^0.13.5
+  visibility_detector: ^0.3.3
 
 
 # For information on the generic Dart part of this file, see the
