@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest]
-        sdk: [3.3.10]
+        sdk: [stable]
     steps:
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1.3
