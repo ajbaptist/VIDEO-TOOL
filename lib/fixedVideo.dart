@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:video_player/video_player.dart';
 
 class FixedVideo extends StatefulWidget {
@@ -12,7 +13,7 @@ class FixedVideo extends StatefulWidget {
 
 class _FixedVideoState extends State<FixedVideo> {
   late VideoPlayerController _controller;
-  late Future<void> _initializeVideoPlayerFuture;
+
   bool isFulled = false;
 
   @override
@@ -21,53 +22,38 @@ class _FixedVideoState extends State<FixedVideo> {
       'https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-1232-large.mp4',
     );
 
-    _initializeVideoPlayerFuture = _controller.initialize();
-    _controller.play();
+    _controller.initialize();
+    setState(() {});
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initializeVideoPlayerFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
+    return Builder(
+      builder: (context) {
+        if (_controller.value.isInitialized) {
           final Size size = _controller.value.size;
-          log("aspect----->${_controller.value.aspectRatio}");
-          return Column(
-            children: [
-              AspectRatio(
-                aspectRatio: !isFulled ? 1 : _controller.value.aspectRatio,
-                child: AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
-                  curve: Curves.easeInOut,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.lightBlue,
-                  child: FittedBox(
-                      alignment: Alignment.topCenter,
-                      fit: BoxFit.cover,
-                      clipBehavior: Clip.hardEdge,
-                      child: Container(
-                          width: size.width,
-                          height: size.height,
-                          child: VideoPlayer(_controller))),
-                ),
-              ),
-              IconButton(
-                  onPressed: () {
-                    isFulled = !isFulled;
-                    setState(() {});
-                  },
-                  icon: Icon(Icons.abc_rounded))
-            ],
+
+          return AspectRatio(
+            aspectRatio: 1,
+            child: SizedBox(
+              child: FittedBox(
+                  alignment: Alignment.topCenter,
+                  fit: BoxFit.cover,
+                  clipBehavior: Clip.hardEdge,
+                  child: SizedBox(
+                      width: size.width,
+                      height: size.height,
+                      child: VideoPlayer(_controller))),
+            ),
           );
         } else {
-          // If the VideoPlayerController is still initializing, show a
-          // loading spinner.
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return Shimmer(
+              child: AspectRatio(aspectRatio: 1),
+              gradient: LinearGradient(
+                colors: [Colors.purple, Colors.blue],
+              ));
         }
       },
     );
